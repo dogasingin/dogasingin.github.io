@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>html{color-scheme:light}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>Doğa Sıngın</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a single reading column with a sticky tab bar; the Journey tab pairs a schematic route map with a stop-by-stop log */
+:root {
+  --bg: #F8FAF9; color-scheme: light; --surface: #FFFFFF; --ink: #14211C; --muted: #5B6B64; --line: #D7E0DB;
+  --accent: #1E6A4E; --accent-soft: #E1EEE7; --route: #8FB5A3;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15.5px; line-height: 1.55; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 860px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+header.hero { padding-block: 36px 22px; display: grid; grid-template-columns: auto 1fr; gap: 22px; align-items: center; }
+.hero img { width: 128px; height: 158px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); }
+.hero h1 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 6vw, 44px); line-height: 1.05; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.role { margin-top: 8px; font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); }
+.contacts { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); text-decoration: none; cursor: pointer; font-family: var(--body); }
+.chip:hover { border-color: var(--accent); }
+.findme { margin-top: 10px; font-size: 14.5px; }
+.findme b { color: var(--accent); }
+.chip small { color: var(--muted); font-size: 11.5px; }
+.chip.wa { background: #1FA855; border-color: #1FA855; color: #fff; font-weight: 600; }
+.chip.wa:hover { background: #178F47; }
+.chip.li { background: #0A66C2; border-color: #0A66C2; color: #fff; font-weight: 600; }
+.chip.li:hover { background: #0857A6; }
+.hello { display: inline-flex; align-items: baseline; gap: 8px; margin-bottom: 8px; padding: 5px 12px; border-radius: 999px; background: var(--accent-soft); border: 0; cursor: pointer; font: 600 14px var(--body); color: var(--accent); }
+.hello small { font: 400 11px var(--mono); color: var(--muted); letter-spacing: .04em; }
+.hello span { transition: opacity .25s; }
+.hello:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+nav.tabs { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+.tabrow { display: flex; gap: 4px; overflow-x: auto; }
+.tabrow button { font: 600 14.5px var(--body); color: var(--muted); background: none; border: 0; padding: 14px 14px 12px; border-bottom: 2.5px solid transparent; cursor: pointer; white-space: nowrap; }
+.tabrow button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tabrow button:focus-visible, .chip:focus-visible, .stop:focus-visible, .pin:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+main { padding-block: 26px 60px; }
+h2 { font-family: var(--display); font-weight: 500; font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 34px 0 12px; }
+h2:first-child { margin-top: 0; }
+.about { font-size: 16.5px; max-width: 66ch; }
+.entry { display: grid; grid-template-columns: 150px 1fr; gap: 4px 20px; padding-block: 14px; border-top: 1px solid var(--line); }
+.entry:first-of-type { border-top: 0; }
+.when { font-family: var(--mono); font-size: 12.5px; color: var(--muted); padding-top: 3px; font-variant-numeric: tabular-nums; }
+.entry h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.entry .where { color: var(--muted); font-size: 14px; }
+.entry ul { margin: 6px 0 0; padding-left: 18px; }
+.entry li { margin-bottom: 3px; }
+.entry > div { min-width: 0; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { font-size: 13.5px; padding: 4px 10px; border-radius: 4px; background: var(--accent-soft); color: var(--ink); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; }
+.list { margin: 0; padding-left: 18px; }
+.list li { margin-bottom: 4px; }
+.dl { margin-top: 36px; padding-top: 24px; border-top: 1px solid var(--line); }
+.dlbtn { display: inline-flex; align-items: center; font-weight: 600; font-size: 15px; color: #fff; background: var(--accent); text-decoration: none; padding: 12px 20px; border-radius: 6px; }
+.dlbtn:hover { filter: brightness(1.1); }
+.dlbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* Journey */
+.mapbox { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; overflow-x: auto; }
+.mapbox svg { display: block; width: 100%; min-width: 520px; height: auto; }
+.grid-dot { fill: var(--line); }
+.arc { fill: none; stroke: var(--route); stroke-width: 1.4; stroke-dasharray: 4 4; }
+.pin { cursor: pointer; }
+.pin circle.o { fill: var(--surface); stroke: var(--accent); stroke-width: 2; transition: r .15s; }
+.pin circle.i { fill: var(--accent); }
+.pin text { font: 600 12px var(--body); fill: var(--ink); }
+.pin text.sub { font: 400 10.5px var(--mono); fill: var(--muted); }
+.pin.on circle.o { fill: var(--accent); r: 11; }
+.hint { color: var(--muted); font-size: 13.5px; margin: 10px 2px 0; }
+.stops { margin-top: 18px; display: grid; gap: 10px; }
+.stop { text-align: left; width: 100%; font: inherit; color: inherit; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; cursor: pointer; display: grid; grid-template-columns: 120px 1fr; gap: 4px 16px; }
+.stop.on { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+.stop .place { font-family: var(--display); font-weight: 700; font-size: 17px; }
+.stop .yr { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.stop .detail { min-width: 0; }
+.stop .detail ul { margin: 6px 0 0; padding-left: 18px; }
+.stop:not(.on) .detail ul { display: none; }
+.stop.on .detail .title { display: none; }
+.stop .kind { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); font-weight: 600; }
+.stop .title { font-weight: 600; }
+
+
+/* Next trip */
+.next { margin-top: 22px; padding-top: 18px; border-top: 1px dashed var(--line); display: grid; grid-template-columns: 76px 1fr; gap: 16px; align-items: center; }
+.next > div { min-width: 0; }
+.stamp.blank { --ink-c: var(--muted); --rot: -8deg; border-style: dashed; cursor: default; width: 76px; }
+.stamp.blank::before { display: none; }
+.nexttxt { margin: 0 0 10px !important; color: var(--ink) !important; font-size: 16px !important; font-weight: 500; }
+.nextbtn { display: inline-flex; font-weight: 600; font-size: 14px; color: #fff; background: #1FA855; text-decoration: none; padding: 9px 14px; border-radius: 6px; }
+.nextbtn:hover { background: #178F47; }
+/* Passport stamps */
+.passport { margin-top: 34px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px 16px; }
+.passport h3 { margin: 0; font-family: var(--display); font-size: 20px; }
+.passport p { margin: 4px 0 16px; color: var(--muted); font-size: 14px; }
+.stamps { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 14px 10px; }
+.stamp { aspect-ratio: 1; max-width: 100%; border: 2px solid var(--ink-c); color: var(--ink-c); border-radius: 50%; display: grid; place-content: center; text-align: center; position: relative; transform: rotate(var(--rot)); opacity: .9; background: none; font: inherit; cursor: pointer; transition: transform .2s; }
+.stamp::before { content: ""; position: absolute; inset: 4px; border: 1px dashed var(--ink-c); border-radius: 50%; }
+.stamp.sq { border-radius: 8px; } .stamp.sq::before { border-radius: 5px; }
+.stamp b { font: 700 22px var(--display); letter-spacing: .04em; line-height: 1; }
+.stamp span { font: 500 9.5px var(--mono); text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; padding-inline: 6px; }
+.stamp:hover, .stamp:focus-visible { transform: rotate(0deg) scale(1.08); opacity: 1; outline: none; }
+@media (prefers-reduced-motion: reduce) { .stamp { transition: none; } }
+@media (max-width: 620px) {
+  header.hero { grid-template-columns: 1fr; }
+  .hero img { width: 112px; height: 138px; }
+  .entry, .stop { grid-template-columns: 1fr; }
+  .two { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <img src="data:image/jpeg;base64,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" alt="Doğa Sıngın">
+    <div>
+      <button class="hello" id="hello" type="button" aria-live="polite"><span id="hello-t">Nice to meet you!</span><small id="hello-l">EN</small></button>
+      <h1>Doğa Sıngın</h1>
+      <div class="role" id="role"></div>
+      <div class="findme" id="findme"></div>
+      <div class="contacts">
+        <a class="chip wa" href="https://wa.me/905325900779" target="_blank" rel="noopener">WhatsApp ↗</a>
+        <a class="chip li" href="https://www.linkedin.com/in/dogasingin/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <button class="chip copy" data-v="doganazsngn@gmail.com" id="c-mail">doganazsngn@gmail.com <small data-l="copy"></small></button>
+        <button class="chip copy" data-v="+90 532 590 0779" id="c-tel">+90 532 590 0779 <small data-l="copy"></small></button>
+      </div>
+    </div>
+  </header>
+</div>
+
+<nav class="tabs"><div class="wrap"><div class="tabrow" role="tablist">
+  <button role="tab" id="t-en" data-view="en">EN CV</button>
+  <button role="tab" id="t-tr" data-view="tr">TR CV</button>
+  <button role="tab" id="t-journey" data-view="journey"></button>
+</div></div></nav>
+
+<main class="wrap" id="main"></main>
+
+<script>
+/* Visitor's phone language */
+let VL = ["en"];
+try { VL = (navigator.languages || [navigator.language || "en"]).map(l => l.slice(0, 2).toLowerCase()); } catch (_) {}
+const DEF = VL.find(l => l === "tr" || l === "en") || "en";
+const NEXT = {
+  en: "Don't see your country? My next trip might be there. Tell me where to go!",
+  tr: "Ülkeni göremedin mi? Bir sonraki yolculuğum oraya olabilir. Nereye gitmeliyim, söyle!",
+  fr: "Vous ne voyez pas votre pays ? Mon prochain voyage sera peut-être chez vous. Dites-moi où aller !",
+  es: "¿No ves tu país? Quizá mi próximo viaje sea allí. ¡Dime adónde ir!",
+  it: "Non vedi il tuo paese? Il mio prossimo viaggio potrebbe essere lì. Dimmi dove andare!",
+  de: "Ihr Land fehlt? Vielleicht geht meine nächste Reise genau dorthin. Verraten Sie mir, wohin!",
+  pt: "Não vê o seu país? A minha próxima viagem pode ser para lá. Diga-me aonde ir!",
+  sq: "Nuk e sheh vendin tënd? Udhëtimi im i radhës mund të jetë atje. Më thuaj ku të shkoj!",
+  nl: "Zie je jouw land niet? Misschien gaat mijn volgende reis daarheen. Vertel me waar ik heen moet!",
+  ru: "Не видите свою страну? Возможно, моё следующее путешествие будет туда. Подскажите, куда поехать!",
+  ar: "لا ترى بلدك؟ ربما تكون رحلتي القادمة إليه. أخبرني إلى أين أذهب!",
+  zh: "没看到你的国家？我的下一次旅行可能就去那里。告诉我该去哪儿吧！",
+  ja: "あなたの国が見当たりませんか？次の旅先はそこかもしれません。おすすめを教えてください！"
+};
+const NL = VL.find(l => NEXT[l]) || DEF;
+const T = {
+en: {
+  role: "International Finance · COP31 Climate Ambassador",
+  copy: "copy", copied: "copied", journeyTab: "Journey",
+  findme: "<b>Find me at COP31:</b> Türkiye Pavilion",
+  about: "Final-year International Finance student at Bahçeşehir University (Class of 2027) and COP31 Climate Ambassador. In procurement, HR and Erasmus roles I have negotiated with suppliers and stakeholders, run processes end to end and validated data. Through the Net Zero AVM Programme and the COP31 Türkiye Pavilion I am building expertise in energy efficiency and the net-zero transition. I want to put finance, procurement and communication skills to work for climate action: sustainable supply chains, climate finance and multi-stakeholder cooperation.",
+  beyond: ["26 countries travelled", "Volleyball", "Swimming", "Skiing", "Snowboarding", "Tennis", "Rowing", "Piano", "Violin"],
+  h: { beyond: "Beyond school", about: "About", exp: "Experience", climate: "Climate & Volunteering", edu: "Education", skills: "Skills", lang: "Languages", cert: "Certifications" },
+  pdf: "Download as PDF ↓",
+  exp: [
+    ["Jul 2026 – now", "Procurement Intern", "Evyap Holding · Istanbul", ["Negotiate pricing, contract and delivery terms directly with Chinese suppliers.", "Manage hygiene raw-material sourcing in SAP for Evyap's new factory in Uzbekistan.", "Join on-site audits of contract manufacturers, checking quality and compliance.", "Build Power Automate flows for price tracking and procurement reporting."]],
+    ["Jan – Mar 2026", "HR Intern", "Sephora (LVMH Group) · Istanbul", ["Supported HR system development: data validation during system integration and data migration of the Shiftup project.", "Managed documentation checks and data archiving."]],
+    ["Jan – Aug 2025", "Erasmus Office Assistant", "Bahçeşehir University · Istanbul", ["Coordinated communication with international stakeholders and tracked mobility documents.", "Created content and advised students on Erasmus processes."]],
+  ],
+  climate: [
+    ["Feb 2026 – now", "COP31 / LCOY Climate Ambassador", "COP31 Türkiye Pavilion", ["Support international delegations with communication and event coordination."]],
+    ["2026 – now", "Net Zero AVM Training Programme", "Argüden Governance Academy & Akış GYO", ["Energy efficiency and net-zero strategies for shopping centres, with an on-site project at Akasya."]],
+    ["2022 – 2023", "YouTube Channel Strategy Lead (volunteer)", "Sabah7Dersi · remote", ["Ran content and growth strategy for an educational YouTube channel, using SEO and performance data."]],
+  ],
+  edu: [
+    ["2024 – 2027", "Bahçeşehir University", "International Finance (BSc) · GPA 3.09/4.00 · Department Student Representative", []],
+    ["Spring 2026", "University of Tirana", "Erasmus+ exchange (grant) · Tirana, Albania · Semester GPA 3.20/4.00", []],
+    ["Fall 2025", "Institut Catholique de Paris", "Erasmus+ exchange (grant) · Paris, France · Semester GPA 3.65/4.00", []],
+    ["2022 – 2024", "Università degli Studi di Padova", "Information Technology Engineering (BE) · Padua, Italy", []],
+    ["2018 – 2022", "İstek Uluğbey Anatolian High School", "Science & Mathematics · GPA 92.6/100 · Volleyball team player", []],
+  ],
+  skills: ["Negotiation & stakeholder management", "Supplier management & audits", "SAP · Excel · Power Automate", "Cost & budget analysis", "Data validation & reporting", "Sustainability & net-zero basics", "Intercultural communication", "Presentations & documentation"],
+  lang: ["English: C1 (advanced)", "French: B1 (intermediate)", "Turkish: native"],
+  cert: ["Defence Industry 402 Training Programme, SSB · 2026 – now", "Financial Modelling, Corporate Finance & Risk Management, LinkedIn · 2026", "Data Storytelling & Anti-Corruption, LVMH · 2026", "Entrepreneurship Training (Basic & Advanced), KOSGEB · 2024", "Virtual Exchange, Clivex & Arqus · 2023 – 2024", "Youth Entrepreneurship Project, YTB, Frankfurt · 2023", "CS Bridge Summer School, Stanford & Koç University · 2021"],
+  hint: "Tap a city on the map or a card below to see what I did there.",
+},
+tr: {
+  role: "Uluslararası Finans · COP31 İklim Elçisi",
+  copy: "kopyala", copied: "kopyalandı", journeyTab: "Yolculuk",
+  findme: "<b>Beni COP31'de bulabileceğiniz yer:</b> Türkiye Pavilyonu",
+  about: "Bahçeşehir Üniversitesi Uluslararası Finans son sınıf öğrencisi (2027 mezunu) ve COP31 İklim Elçisiyim. Satın alma, İK ve Erasmus rollerinde tedarikçi ve paydaşlarla müzakere yürüttüm, süreçleri baştan sona yönettim ve veri doğrulama yaptım. Net Zero AVM Programı ve COP31 Türkiye Pavilyonu'ndaki görevimle enerji verimliliği ve net sıfır dönüşümünde uzmanlaşıyorum. Finans, satın alma ve iletişim becerilerimi iklim için kullanmak istiyorum: sürdürülebilir tedarik zincirleri, iklim finansmanı ve çok paydaşlı iş birlikleri.",
+  beyond: ["26 ülke gezdim", "Voleybol", "Yüzme", "Kayak", "Snowboard", "Tenis", "Kürek", "Piyano", "Keman"],
+  h: { beyond: "Okul dışında", about: "Hakkımda", exp: "Deneyim", climate: "İklim ve Gönüllülük", edu: "Eğitim", skills: "Yetkinlikler", lang: "Yabancı Diller", cert: "Sertifikalar" },
+  pdf: "PDF olarak indir ↓",
+  exp: [
+    ["Tem 2026 – devam", "Satın Alma Stajyeri", "Evyap Holding · İstanbul", ["Çinli tedarikçilerle fiyat, sözleşme ve teslimat şartları üzerine doğrudan pazarlık yürütüyorum.", "Özbekistan'daki yeni fabrika için hijyen hammadde tedarikini SAP üzerinden yönetiyorum.", "Fason üreticilerde saha denetimlerine katılarak kalite ve uyumluluk kontrolü yapıyorum.", "Fiyat takibi ve raporlama için Power Automate akışları kuruyorum."]],
+    ["Oca – Mar 2026", "İK Stajyeri", "Sephora (LVMH Group) · İstanbul", ["İK sisteminin geliştirilmesine destek verdim: Shiftup projesinin sistem entegrasyonu ve veri göçünde veri doğrulaması yaptım.", "Dokümantasyon kontrollerini ve veri arşivleme süreçlerini yönettim."]],
+    ["Oca – Ağu 2025", "Erasmus Ofis Asistanı", "Bahçeşehir Üniversitesi · İstanbul", ["Uluslararası paydaşlarla iletişimi koordine ettim, hareketlilik belgelerini takip ettim.", "Öğrencilere Erasmus süreçleri hakkında içerik ürettim ve danışmanlık verdim."]],
+  ],
+  climate: [
+    ["Şub 2026 – devam", "COP31 / LCOY İklim Elçisi", "COP31 Türkiye Pavilyonu", ["Uluslararası delegasyonlara iletişim ve etkinlik koordinasyonunda destek veriyorum."]],
+    ["2026 – devam", "Net Zero AVM Eğitim Programı", "Argüden Yönetişim Akademisi & Akış GYO", ["AVM'ler için enerji verimliliği ve net sıfır stratejileri; Akasya'da saha projesi."]],
+    ["2022 – 2023", "YouTube Kanal Strateji Lideri (gönüllü)", "Sabah7Dersi · uzaktan", ["Eğitim odaklı bir YouTube kanalının içerik ve büyüme stratejisini SEO ve performans verileriyle yönettim."]],
+  ],
+  edu: [
+    ["2024 – 2027", "Bahçeşehir Üniversitesi", "Uluslararası Finans (Lisans) · GNO 3.09/4.00 · Bölüm Öğrenci Temsilcisi", []],
+    ["Bahar 2026", "University of Tirana", "Erasmus+ değişim (hibeli) · Tiran, Arnavutluk · Dönem GNO 3.20/4.00", []],
+    ["Güz 2025", "Institut Catholique de Paris", "Erasmus+ değişim (hibeli) · Paris, Fransa · Dönem GNO 3.65/4.00", []],
+    ["2022 – 2024", "Università degli Studi di Padova", "Bilgi Teknolojileri Mühendisliği · Padova, İtalya", []],
+    ["2018 – 2022", "İstek Uluğbey Anadolu Lisesi", "Fen & Matematik · GNO 92.6/100 · Voleybol takımı oyuncusu", []],
+  ],
+  skills: ["Müzakere ve paydaş yönetimi", "Tedarikçi yönetimi ve denetim", "SAP · Excel · Power Automate", "Maliyet ve bütçe analizi", "Veri doğrulama ve raporlama", "Sürdürülebilirlik ve net sıfır", "Kültürlerarası iletişim", "Sunum ve dokümantasyon"],
+  lang: ["İngilizce: C1 (ileri)", "Fransızca: B1 (orta)", "Türkçe: ana dil"],
+  cert: ["Savunma Sanayii 402 Eğitim Programı, SSB · 2026 – devam", "Finansal Modelleme, Kurumsal Finans ve Risk Yönetimi, LinkedIn · 2026", "Veri Hikâyeleştirme ve Anti-Corruption, LVMH · 2026", "Girişimcilik Eğitimi (Geleneksel & İleri), KOSGEB · 2024", "Sanal Değişim Programları, Clivex & Arqus · 2023 – 2024", "Genç Girişimcilik Projesi, YTB, Frankfurt · 2023", "CS Bridge Yaz Okulu, Stanford & Koç Üniversitesi · 2021"],
+  hint: "Haritada bir şehre ya da aşağıdaki bir karta dokun, orada ne yaptığımı gör.",
+}};
+
+/* Journey stops: lon/lat for the schematic map */
+const STOPS = [
+  { id: "istanbul", lon: 28.98, lat: 41.01, yr: {en:"2018 – now",tr:"2018 – devam"},
+    en: { place: "Istanbul", items: [["Work", "Evyap Holding: procurement intern"], ["Work", "Sephora (LVMH): HR intern"], ["Study", "Bahçeşehir University: International Finance"], ["Work", "BAU Erasmus Office assistant"], ["Climate", "Net Zero AVM Programme, Akasya project"]] },
+    tr: { place: "İstanbul", items: [["İş", "Evyap Holding: satın alma stajyeri"], ["İş", "Sephora (LVMH): İK stajyeri"], ["Eğitim", "Bahçeşehir Üniversitesi: Uluslararası Finans"], ["İş", "BAU Erasmus Ofisi asistanı"], ["İklim", "Net Zero AVM Programı, Akasya projesi"]] } },
+  { id: "cop31", lon: 30.7, lat: 36.9, yr: {en:"Nov 2026",tr:"Kasım 2026"},
+    en: { place: "COP31", items: [["Climate", "Climate Ambassador at the Türkiye Pavilion"], ["Climate", "Supporting international delegations and events"]] },
+    tr: { place: "COP31", items: [["İklim", "Türkiye Pavilyonu'nda İklim Elçisi"], ["İklim", "Uluslararası delegasyonlara ve etkinliklere destek"]] } },
+  { id: "paris", lon: 2.35, lat: 48.85, yr: {en:"Fall 2025",tr:"Güz 2025"},
+    en: { place: "Paris", items: [["Study", "Institut Catholique de Paris, Erasmus+ exchange (GPA 3.65/4.00)"]] },
+    tr: { place: "Paris", items: [["Eğitim", "Institut Catholique de Paris, Erasmus+ değişimi (GNO 3.65/4.00)"]] } },
+  { id: "padova", lon: 11.88, lat: 45.41, yr: {en:"2022 – 2024",tr:"2022 – 2024"},
+    en: { place: "Padua", items: [["Study", "Università degli Studi di Padova, IT Engineering"]] },
+    tr: { place: "Padova", items: [["Eğitim", "Università degli Studi di Padova, Bilgi Teknolojileri Mühendisliği"]] } },
+  { id: "tirana", lon: 19.82, lat: 41.33, yr: {en:"Spring 2026",tr:"Bahar 2026"},
+    en: { place: "Tirana", items: [["Study", "University of Tirana, Erasmus+ exchange (GPA 3.20/4.00)"]] },
+    tr: { place: "Tiran", items: [["Eğitim", "University of Tirana, Erasmus+ değişimi (GNO 3.20/4.00)"]] } },
+  { id: "frankfurt", lon: 8.68, lat: 50.11, yr: {en:"2023",tr:"2023"},
+    en: { place: "Frankfurt", items: [["Programme", "YTB Youth Entrepreneurship & Empowerment Project"]] },
+    tr: { place: "Frankfurt", items: [["Program", "YTB Genç Girişimcilik ve Güçlendirme Projesi"]] } },
+  { id: "uzbekistan", lon: 69.2, lat: 41.3, yr: {en:"2026",tr:"2026"},
+    en: { place: "Uzbekistan", items: [["Work", "Sourcing hygiene raw materials for Evyap's new factory"]] },
+    tr: { place: "Özbekistan", items: [["İş", "Evyap'ın yeni fabrikası için hijyen hammadde tedariki"]] } },
+];
+
+let lang = DEF, view = DEF, active = "istanbul";
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+
+function entries(list) {
+  return list.map(([w, t, where, b]) => `<div class="entry"><div class="when">${w}</div><div><h3>${esc(t)}</h3><div class="where">${esc(where)}</div>${b.length ? "<ul>" + b.map(x => `<li>${esc(x)}</li>`).join("") + "</ul>" : ""}</div></div>`).join("");
+}
+
+function cv(L) {
+  const d = T[L];
+  return `<h2>${d.h.about}</h2><p class="about">${esc(d.about)}</p>
+  <h2>${d.h.exp}</h2>${entries(d.exp)}
+  <h2>${d.h.climate}</h2>${entries(d.climate)}
+  <h2>${d.h.edu}</h2>${entries(d.edu)}
+  <div class="two"><div><h2>${d.h.skills}</h2><div class="tags">${d.skills.map(s => `<span class="tag">${esc(s)}</span>`).join("")}</div>
+  <h2>${d.h.lang}</h2><ul class="list">${d.lang.map(s => `<li>${esc(s)}</li>`).join("")}</ul>
+  <h2>${d.h.beyond}</h2><div class="tags">${d.beyond.map(s => `<span class="tag">${esc(s)}</span>`).join("")}</div></div>
+  <div><h2>${d.h.cert}</h2><ul class="list">${d.cert.map(s => `<li>${esc(s)}</li>`).join("")}</ul></div></div>
+  <div class="dl"><a class="dlbtn" href="doga-singin-cv-${L}.pdf" target="_blank" rel="noopener">${d.pdf}</a></div>`;
+}
+
+function proj(lon, lat) { // equirectangular over lon -2..74, lat 34..53
+  return [20 + (lon + 2) / 76 * 660, 20 + (53 - lat) / 19 * 260];
+}
+
+function journey(L) {
+  const d = T[L];
+  let dots = "";
+  for (let x = 30; x < 700; x += 18) for (let y = 26; y < 300; y += 18) dots += `<circle class="grid-dot" cx="${x}" cy="${y}" r="1.1"/>`;
+  const [hx, hy] = proj(28.98, 41.01);
+  const arcs = STOPS.filter(s => s.id !== "istanbul").map(s => { const [x, y] = proj(s.lon, s.lat); const mx = (hx + x) / 2, my = Math.min(hy, y) - 40; return `<path class="arc" d="M${hx},${hy} Q${mx},${my} ${x},${y}"/>`; }).join("");
+  const pins = STOPS.map(s => { const [x, y] = proj(s.lon, s.lat); const below = s.id === "cop31"; return `<g class="pin${s.id === active ? " on" : ""}" data-id="${s.id}" tabindex="0" role="button" aria-label="${s[L].place}"><circle class="o" cx="${x}" cy="${y}" r="8"/><circle class="i" cx="${x}" cy="${y}" r="3"/><text x="${x + 13}" y="${below ? y + 18 : y - 4}">${s[L].place}</text><text class="sub" x="${x + 13}" y="${below ? y + 31 : y + 10}">${s.yr[L]}</text></g>`; }).join("");
+  const cards = STOPS.map(s => `<button class="stop${s.id === active ? " on" : ""}" data-id="${s.id}" id="stop-${s.id}"><div><div class="place">${s[L].place}</div><div class="yr">${s.yr[L]}</div></div><div class="detail"><div class="title">${esc(s[L].items[0][1])}${s[L].items.length > 1 ? ` <span class="yr">+${s[L].items.length - 1}</span>` : ""}</div><ul>${s[L].items.map(([k, v]) => `<li><span class="kind">${k}</span> · ${esc(v)}</li>`).join("")}</ul></div></button>`).join("");
+  return `<div class="mapbox"><svg viewBox="0 0 720 300" role="img" aria-label="${d.journeyTab}">${dots}${arcs}${pins}</svg></div><p class="hint">${d.hint}</p><div class="stops">${cards}</div>${passport(L)}`;
+}
+
+
+const COUNTRIES = [
+  ["FR","France","Fransa"],["DE","Germany","Almanya"],["NL","Netherlands","Hollanda"],["BE","Belgium","Belçika"],
+  ["PT","Portugal","Portekiz"],["ES","Spain","İspanya"],["IT","Italy","İtalya"],["GR","Greece","Yunanistan"],
+  ["AL","Albania","Arnavutluk"],["ME","Montenegro","Karadağ"],["XK","Kosovo","Kosova"],["MK","N. Macedonia","K. Makedonya"],
+  ["AT","Austria","Avusturya"],["CH","Switzerland","İsviçre"],["SE","Sweden","İsveç"],["NO","Norway","Norveç"],["DK","Denmark","Danimarka"],["CZ","Czechia","Çekya"],["HU","Hungary","Macaristan"],
+  ["HR","Croatia","Hırvatistan"],["BG","Bulgaria","Bulgaristan"],["RO","Romania","Romanya"],["RS","Serbia","Sırbistan"],
+  ["US","USA","ABD"],["AE","UAE","BAE"],["ZA","South Africa","Güney Afrika"]
+];
+const INKS = ["#1E6A4E", "#2B5DA8", "#B0413E", "#6B4FA0", "#9A6A12"];
+function passport(L) {
+  const head = L === "tr" ? ["Pasaport damgaları", `${COUNTRIES.length} ülke, sayı artmaya devam ediyor.`] : ["Passport stamps", `${COUNTRIES.length} countries and counting.`];
+  const st = COUNTRIES.map(([c, en, tr], i) => {
+    const rot = ((i * 37) % 21) - 10, sq = i % 3 === 1 ? " sq" : "";
+    return `<button class="stamp${sq}" style="--ink-c:${INKS[i % INKS.length]};--rot:${rot}deg" title="${L === "tr" ? tr : en}"><b>${c}</b><span>${L === "tr" ? tr : en}</span></button>`;
+  }).join("");
+  const msg = L === "tr" ? "Merhaba Doğa! Bir sonraki yolculuğun şuraya olmalı: " : "Hi Doğa! Your next trip should be to: ";
+  const btn = L === "tr" ? "WhatsApp'tan bir ülke öner" : "Suggest a country on WhatsApp";
+  const nl = L === "tr" || L === "en" ? (NL === "tr" || NL === "en" ? NEXT[L] : NEXT[NL]) : NEXT[L];
+  return `<section class="passport"><h3>${head[0]}</h3><p>${head[1]}</p><div class="stamps">${st}</div>
+  <div class="next"><div class="stamp blank" aria-hidden="true"><b>?</b></div><div><p class="nexttxt" dir="${NL === "ar" && nl === NEXT.ar ? "rtl" : "auto"}">${esc(nl)}</p>
+  <a class="nextbtn" href="https://wa.me/905325900779?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">${btn} ↗</a></div></div></section>`;
+}
+function render() {
+  const d = T[lang];
+  $("#role").textContent = d.role;
+  $("#findme").innerHTML = d.findme;
+  $("#t-journey").textContent = lang === "tr" ? "Yolculuk" : "Journey";
+  document.querySelectorAll(".copy small").forEach(s => s.textContent = d.copy);
+  document.querySelectorAll(".tabrow button").forEach(b => b.setAttribute("aria-selected", b.dataset.view === view));
+  document.documentElement.lang = lang;
+  $("#main").innerHTML = view === "journey" ? journey(lang) : cv(view);
+}
+
+function select(id) {
+  active = id;
+  document.querySelectorAll(".pin, .stop").forEach(el => el.classList.toggle("on", el.dataset.id === id));
+}
+
+function fromHash() {
+  const h = location.hash.slice(1);
+  if (h === "tr" || h === "en") { view = h; lang = h; }
+  else if (h === "journey" || h === "yolculuk") { view = "journey"; if (h === "yolculuk") lang = "tr"; }
+  else { view = DEF; lang = DEF; }
+  render();
+}
+
+document.querySelector(".tabrow").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const v = b.dataset.view;
+  if (v === "journey") location.hash = lang === "tr" ? "yolculuk" : "journey"; else location.hash = v;
+});
+$("#main").addEventListener("click", e => {
+  const el = e.target.closest(".pin, .stop"); if (!el) return;
+  select(el.dataset.id);
+  if (el.classList.contains("pin")) { const c = document.getElementById("stop-" + el.dataset.id); if (c) c.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+});
+$("#main").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.closest(".pin")) { e.preventDefault(); select(e.target.closest(".pin").dataset.id); } });
+document.querySelectorAll(".copy").forEach(b => b.addEventListener("click", () => {
+  const s = b.querySelector("small");
+  const done = () => { s.textContent = T[lang].copied; setTimeout(() => s.textContent = T[lang].copy, 1500); };
+  try { navigator.clipboard.writeText(b.dataset.v).then(done, () => {}); } catch (_) {}
+}));
+window.addEventListener("hashchange", fromHash);
+fromHash();
+
+/* Greets each visitor in their own language; tapping cycles through the others */
+const HELLO = [
+  ["en","Nice to meet you!"],["tr","Tanıştığımıza memnun oldum!"],["fr","Enchantée !"],["es","¡Encantada de conocerte!"],
+  ["it","Piacere di conoscerti!"],["de","Schön, Sie kennenzulernen!"],["pt","Prazer em conhecer você!"],["sq","Gëzohem që u njohëm!"],
+  ["nl","Leuk je te ontmoeten!"],["ru","Приятно познакомиться!"],["ar","تشرفت بمعرفتك"],["zh","很高兴认识你！"],["ja","はじめまして！"]
+];
+let hi = 0;
+try { const prefs = (navigator.languages || [navigator.language || "en"]).map(l => l.slice(0, 2).toLowerCase());
+  for (const p of prefs) { const k = HELLO.findIndex(h => h[0] === p); if (k >= 0) { hi = k; break; } } } catch (_) {}
+function showHello() { $("#hello-t").textContent = HELLO[hi][1]; $("#hello-t").dir = HELLO[hi][0] === "ar" ? "rtl" : "auto"; $("#hello-l").textContent = HELLO[hi][0].toUpperCase(); }
+showHello();
+$("#hello").addEventListener("click", () => { hi = (hi + 1) % HELLO.length; showHello(); });
+</script>
+
+</body>
+</html>
