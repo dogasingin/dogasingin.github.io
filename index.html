@@ -161,7 +161,7 @@ h2:first-child { margin-top: 0; }
 /* Visitor's phone language */
 let VL = ["en"];
 try { VL = (navigator.languages || [navigator.language || "en"]).map(l => l.slice(0, 2).toLowerCase()); } catch (_) {}
-const DEF = VL.find(l => l === "tr" || l === "en") || "en";
+const DEF = "en"; /* site opens in English for everyone; Turkish via the TR CV tab */
 const NEXT = {
   en: "Don't see your country? My next trip might be there. Tell me where to go!",
   tr: "Ülkeni göremedin mi? Bir sonraki yolculuğum oraya olabilir. Nereye gitmeliyim, söyle!",
