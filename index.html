@@ -104,7 +104,11 @@ h2:first-child { margin-top: 0; }
 .nextbtn { display: inline-flex; font-weight: 600; font-size: 14px; color: #fff; background: #1FA855; text-decoration: none; padding: 9px 14px; border-radius: 6px; }
 .nextbtn:hover { background: #178F47; }
 /* Passport stamps */
-.passport { margin-top: 34px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px 16px; }
+.tabrow button.globe { font-size: 20px; padding-inline: 12px; }
+@keyframes stampIn { 0% { opacity: 0; transform: rotate(var(--rot)) scale(1.7); } 70% { opacity: 1; transform: rotate(var(--rot)) scale(.94); } 100% { opacity: .9; transform: rotate(var(--rot)) scale(1); } }
+.stamps .stamp { animation: stampIn .38s ease-out both; animation-delay: calc(var(--i) * 70ms); }
+@media (prefers-reduced-motion: reduce) { .stamps .stamp { animation: none; } }
+.passport { margin-top: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px 16px; }
 .passport h3 { margin: 0; font-family: var(--display); font-size: 20px; }
 .passport p { margin: 4px 0 16px; color: var(--muted); font-size: 14px; }
 .stamps { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 14px 10px; }
@@ -148,6 +152,7 @@ h2:first-child { margin-top: 0; }
   <button role="tab" id="t-en" data-view="en">EN CV</button>
   <button role="tab" id="t-tr" data-view="tr">TR CV</button>
   <button role="tab" id="t-journey" data-view="journey"></button>
+  <button role="tab" id="t-passport" data-view="passport" aria-label="Passport" class="globe">🌍</button>
 </div></div></nav>
 
 <main class="wrap" id="main"></main>
@@ -293,7 +298,7 @@ function journey(L) {
   const arcs = STOPS.filter(s => s.id !== "istanbul").map(s => { const [x, y] = proj(s.lon, s.lat); const mx = (hx + x) / 2, my = Math.min(hy, y) - 40; return `<path class="arc" d="M${hx},${hy} Q${mx},${my} ${x},${y}"/>`; }).join("");
   const pins = STOPS.map(s => { const [x, y] = proj(s.lon, s.lat); const below = s.id === "cop31"; return `<g class="pin${s.id === active ? " on" : ""}" data-id="${s.id}" tabindex="0" role="button" aria-label="${s[L].place}"><circle class="o" cx="${x}" cy="${y}" r="8"/><circle class="i" cx="${x}" cy="${y}" r="3"/><text x="${x + 13}" y="${below ? y + 18 : y - 4}">${s[L].place}</text><text class="sub" x="${x + 13}" y="${below ? y + 31 : y + 10}">${s.yr[L]}</text></g>`; }).join("");
   const cards = STOPS.map(s => `<button class="stop${s.id === active ? " on" : ""}" data-id="${s.id}" id="stop-${s.id}"><div><div class="place">${s[L].place}</div><div class="yr">${s.yr[L]}</div></div><div class="detail"><div class="title">${esc(s[L].items[0][1])}${s[L].items.length > 1 ? ` <span class="yr">+${s[L].items.length - 1}</span>` : ""}</div><ul>${s[L].items.map(([k, v]) => `<li><span class="kind">${k}</span> · ${esc(v)}</li>`).join("")}</ul></div></button>`).join("");
-  return `<div class="mapbox"><svg viewBox="0 0 720 300" role="img" aria-label="${d.journeyTab}">${dots}${arcs}${pins}</svg></div><p class="hint">${d.hint}</p><div class="stops">${cards}</div>${passport(L)}`;
+  return `<div class="mapbox"><svg viewBox="0 0 720 300" role="img" aria-label="${d.journeyTab}">${dots}${arcs}${pins}</svg></div><p class="hint">${d.hint}</p><div class="stops">${cards}</div>`;
 }
 
 
@@ -310,7 +315,7 @@ function passport(L) {
   const head = L === "tr" ? ["Pasaport damgaları", `${COUNTRIES.length} ülke, sayı artmaya devam ediyor.`] : ["Passport stamps", `${COUNTRIES.length} countries and counting.`];
   const st = COUNTRIES.map(([c, en, tr], i) => {
     const rot = ((i * 37) % 21) - 10, sq = i % 3 === 1 ? " sq" : "";
-    return `<button class="stamp${sq}" style="--ink-c:${INKS[i % INKS.length]};--rot:${rot}deg" title="${L === "tr" ? tr : en}"><b>${c}</b><span>${L === "tr" ? tr : en}</span></button>`;
+    return `<button class="stamp${sq}" style="--ink-c:${INKS[i % INKS.length]};--rot:${rot}deg;--i:${i}" title="${L === "tr" ? tr : en}"><b>${c}</b><span>${L === "tr" ? tr : en}</span></button>`;
   }).join("");
   const msg = L === "tr" ? "Merhaba Doğa! Bir sonraki yolculuğun şuraya olmalı: " : "Hi Doğa! Your next trip should be to: ";
   const btn = L === "tr" ? "WhatsApp'tan bir ülke öner" : "Suggest a country on WhatsApp";
@@ -327,7 +332,7 @@ function render() {
   document.querySelectorAll(".copy small").forEach(s => s.textContent = d.copy);
   document.querySelectorAll(".tabrow button").forEach(b => b.setAttribute("aria-selected", b.dataset.view === view));
   document.documentElement.lang = lang;
-  $("#main").innerHTML = view === "journey" ? journey(lang) : cv(view);
+  $("#main").innerHTML = view === "journey" ? journey(lang) : view === "passport" ? passport(lang) : cv(view);
 }
 
 function select(id) {
@@ -339,6 +344,7 @@ function fromHash() {
   const h = location.hash.slice(1);
   if (h === "tr" || h === "en") { view = h; lang = h; }
   else if (h === "journey" || h === "yolculuk") { view = "journey"; if (h === "yolculuk") lang = "tr"; }
+  else if (h === "passport" || h === "pasaport") { view = "passport"; if (h === "pasaport") lang = "tr"; }
   else { view = DEF; lang = DEF; }
   render();
 }
@@ -346,7 +352,7 @@ function fromHash() {
 document.querySelector(".tabrow").addEventListener("click", e => {
   const b = e.target.closest("button"); if (!b) return;
   const v = b.dataset.view;
-  if (v === "journey") location.hash = lang === "tr" ? "yolculuk" : "journey"; else location.hash = v;
+  if (v === "journey") location.hash = lang === "tr" ? "yolculuk" : "journey"; else if (v === "passport") location.hash = lang === "tr" ? "pasaport" : "passport"; else location.hash = v;
 });
 $("#main").addEventListener("click", e => {
   const el = e.target.closest(".pin, .stop"); if (!el) return;
